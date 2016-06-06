@@ -1,11 +1,13 @@
 from __future__ import print_function
 import pickle
 import gzip
+import numpy as np
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Convolution2D, MaxPooling2D
 from keras.optimizers import SGD
+from keras.callbacks import EarlyStopping
 from keras.utils import np_utils
 
 batch_size = 32
@@ -14,18 +16,22 @@ nb_epoch = 200
 data_augmentation = False
 
 # input image dimensions
-img_rows, img_cols = 200, 200
+img_rows, img_cols = 100, 100
 # the CIFAR10 images are RGB
-img_channels = 1
+img_channels = 3
 
 
 def load_data(file_path_incl_path):
-    with gzip.open(file_path_incl_path, 'rb') as file:
-        return pickle.load(file)
+    if file_path_incl_path.endswith('pklz'):
+        with gzip.open(file_path_incl_path, 'rb') as file:
+            return pickle.load(file)
+    else:
+        data = np.load(file_path_incl_path)
+        return data['X_train'], data['X_test'], data['y_train'], data['y_test']
 
 
 # the data, shuffled and split between train and test sets
-X_train, X_test, y_train, y_test = load_data('petsTrainingData.pklz')
+X_train, X_test, y_train, y_test = load_data('petsTrainingData.npz')
 print('X_train shape:', X_train.shape)
 print(X_train.shape[0], 'train samples')
 print(X_test.shape[0], 'test samples')
@@ -34,6 +40,7 @@ print(X_test.shape[0], 'test samples')
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
+earlyStopping = EarlyStopping(monitor='val_loss', patience=2, verbose=1, mode='auto')
 model = Sequential()
 
 model.add(Convolution2D(32, 5, 5, border_mode='same',
@@ -91,7 +98,8 @@ if not data_augmentation:
               batch_size=batch_size,
               nb_epoch=nb_epoch,
               validation_data=(X_test, Y_test),
-              shuffle=True)
+              shuffle=True,
+              callbacks=[earlyStopping])
 else:
     print('Using real-time data augmentation.')
 
@@ -106,7 +114,8 @@ else:
         width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
         height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
         horizontal_flip=True,  # randomly flip images
-        vertical_flip=False)  # randomly flip images
+        vertical_flip=False, # randomly flip images
+        callbacks=[earlyStopping])
 
     # compute quantities required for featurewise normalization
     # (std, mean, and principal components if ZCA whitening is applied)

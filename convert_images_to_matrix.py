@@ -10,7 +10,7 @@ from sklearn.cross_validation import train_test_split
 
 _directory = '/Users/hannes/PetImages/training_set/'
 categories = ['Cat/', 'Dog/']
-max_samples = 5
+max_samples = 5000
 
 
 data = list()
@@ -24,7 +24,7 @@ for animal in categories:
         try:
             image = Image.open(directory + f)
             image.load()
-            image_matrix = np.asarray(image, dtype="int32").reshape(1, 200, 200)
+            image_matrix = np.asarray(image, dtype="int32").T # .reshape(1, 200, 200)
             image_classification = 1 if animal == 'Cat/' else 0
             data.append(image_matrix)
             classification.append(image_classification)
@@ -41,7 +41,9 @@ data, classification, = reshuffle_dataset(data, classification)
 # create split set
 X_train, X_test, y_train, y_test = train_test_split(data, classification, test_size=0.20, random_state=42)
 
-#store the object
-f = gzip.open('petsTrainingData.pklz', 'wb')
-pickle.dump([X_train, X_test, y_train, y_test], f)
-f.close()
+#store the object as pickle - this method fails with large data volumes
+# f = gzip.open('petsTrainingData.pklz', 'wb')
+# pickle.dump([X_train, X_test, y_train, y_test], f)
+# f.close()
+
+np.savez_compressed('petsTrainingData.npz', X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test)
