@@ -7,7 +7,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Convolution2D, MaxPooling2D
 from keras.optimizers import SGD
-from keras.callbacks import EarlyStopping
+from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.utils import np_utils
 
 batch_size = 32
@@ -41,6 +41,7 @@ Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
 earlyStopping = EarlyStopping(monitor='val_acc', patience=10, verbose=1, mode='auto')
+checkpointer = ModelCheckpoint(filepath="/tmp/weights.hdf5", verbose=1, save_best_only=True)
 model = Sequential()
 
 model.add(Convolution2D(32, 5, 5, border_mode='same',
@@ -99,7 +100,7 @@ if not data_augmentation:
               nb_epoch=nb_epoch,
               validation_data=(X_test, Y_test),
               shuffle=True,
-              callbacks=[earlyStopping])
+              callbacks=[earlyStopping, checkpointer])
 else:
     print('Using real-time data augmentation.')
 
