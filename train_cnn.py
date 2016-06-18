@@ -40,7 +40,7 @@ print(X_test.shape[0], 'test samples')
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
-earlyStopping = EarlyStopping(monitor='val_loss', patience=2, verbose=1, mode='auto')
+earlyStopping = EarlyStopping(monitor='val_acc', patience=10, verbose=1, mode='auto')
 model = Sequential()
 
 model.add(Convolution2D(32, 5, 5, border_mode='same',
@@ -67,12 +67,12 @@ model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
-model.add(Convolution2D(64, 3, 3, border_mode='same'))
-model.add(Activation('relu'))
-model.add(Convolution2D(64, 3, 3))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
+# model.add(Convolution2D(64, 3, 3, border_mode='same'))
+# model.add(Activation('relu'))
+# model.add(Convolution2D(64, 3, 3))
+# model.add(Activation('relu'))
+# model.add(MaxPooling2D(pool_size=(2, 2)))
+# model.add(Dropout(0.25))
 
 model.add(Flatten())
 model.add(Dense(512))
