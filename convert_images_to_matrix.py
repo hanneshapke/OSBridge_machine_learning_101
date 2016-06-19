@@ -5,12 +5,13 @@ import numpy as np
 import pickle
 import gzip
 
+from sklearn.utils import shuffle
 from sklearn.cross_validation import train_test_split
 
 
 _directory = '/Users/hannes/PetImages/training_set/'
 categories = ['Cat/', 'Dog/']
-max_samples = 5000
+# max_samples = 5000
 
 
 data = list()
@@ -20,7 +21,7 @@ for animal in categories:
     print (animal)
     directory = _directory + animal
     _files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
-    for f in _files[:max_samples]:
+    for f in _files:
         try:
             image = Image.open(directory + f)
             image.load()
@@ -32,7 +33,7 @@ for animal in categories:
             continue
 
 # shuffle
-from sklearn.utils import shuffle
+
 def reshuffle_dataset(X_data_set, y_data_set):
     return shuffle(np.stack(X_data_set, axis=0), np.stack(y_data_set, axis=0), random_state=0)
 

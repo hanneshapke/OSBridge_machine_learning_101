@@ -12,7 +12,7 @@ from keras.utils import np_utils
 
 batch_size = 32
 nb_classes = 2
-nb_epoch = 200
+nb_epoch = 60
 data_augmentation = False
 
 # input image dimensions
@@ -44,29 +44,29 @@ earlyStopping = EarlyStopping(monitor='val_acc', patience=10, verbose=1, mode='a
 checkpointer = ModelCheckpoint(filepath="/tmp/weights.hdf5", verbose=1, save_best_only=True)
 model = Sequential()
 
-model.add(Convolution2D(32, 5, 5, border_mode='same',
+model.add(Convolution2D(32, 3, 3, border_mode='same',
                         input_shape=(img_channels, img_rows, img_cols)))
 model.add(Activation('relu'))
-model.add(Convolution2D(32, 3, 3))
+model.add(Convolution2D(32, 2, 2))
 model.add(Activation('relu'))
-model.add(Convolution2D(32, 3, 3))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
-
-model.add(Convolution2D(64, 3, 3, border_mode='same'))
-model.add(Activation('relu'))
-model.add(Convolution2D(64, 3, 3))
+model.add(Convolution2D(32, 2, 2))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
-
-# model.add(Convolution2D(64, 3, 3, border_mode='same'))
-# model.add(Activation('relu'))
-# model.add(Convolution2D(64, 3, 3))
-# model.add(Activation('relu'))
-# model.add(MaxPooling2D(pool_size=(2, 2)))
 # model.add(Dropout(0.25))
+
+model.add(Convolution2D(64, 2, 2, border_mode='same'))
+model.add(Activation('relu'))
+model.add(Convolution2D(64, 2, 2))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+# model.add(Dropout(0.25))
+
+model.add(Convolution2D(64, 2, 2, border_mode='same'))
+model.add(Activation('relu'))
+model.add(Convolution2D(64, 2, 2))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
 
 # model.add(Convolution2D(64, 3, 3, border_mode='same'))
 # model.add(Activation('relu'))
