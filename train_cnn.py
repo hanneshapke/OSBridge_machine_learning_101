@@ -113,7 +113,7 @@ else:
         height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
         horizontal_flip=False,  # randomly flip images
         vertical_flip=True, # randomly flip images
-        callbacks=[earlyStopping])
+    )
 
     # compute quantities required for featurewise normalization
     # (std, mean, and principal components if ZCA whitening is applied)
@@ -124,4 +124,5 @@ else:
                         batch_size=batch_size),
                         samples_per_epoch=X_train.shape[0],
                         nb_epoch=nb_epoch,
-                        validation_data=(X_test, Y_test))
+                        validation_data=(X_test, Y_test),
+                        callbacks=[earlyStopping, checkpointer])
