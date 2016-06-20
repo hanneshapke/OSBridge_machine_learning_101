@@ -13,7 +13,7 @@ from keras.utils import np_utils
 batch_size = 32
 nb_classes = 2
 nb_epoch = 60
-data_augmentation = False
+data_augmentation = True
 
 # input image dimensions
 img_rows, img_cols = 100, 100
@@ -32,16 +32,13 @@ def load_data(file_path_incl_path):
 
 # the data, shuffled and split between train and test sets
 X_train, X_test, y_train, y_test = load_data('petsTrainingData.npz')
-print('X_train shape:', X_train.shape)
-print(X_train.shape[0], 'train samples')
-print(X_test.shape[0], 'test samples')
 
 # convert class vectors to binary class matrices
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
 earlyStopping = EarlyStopping(monitor='val_acc', patience=10, verbose=1, mode='auto')
-checkpointer = ModelCheckpoint(filepath="/tmp/weights.hdf5", verbose=1, save_best_only=True)
+checkpointer = ModelCheckpoint(filepath="/tmp/weights.hdf5", monitor='val_acc', verbose=1, save_best_only=True)
 model = Sequential()
 
 model.add(Convolution2D(32, 3, 3, border_mode='same',
@@ -108,14 +105,14 @@ else:
     datagen = ImageDataGenerator(
         featurewise_center=False,  # set input mean to 0 over the dataset
         samplewise_center=False,  # set each sample mean to 0
-        featurewise_std_normalization=False,  # divide inputs by std of the dataset
+        featurewise_std_normalization=True,  # divide inputs by std of the dataset
         samplewise_std_normalization=False,  # divide each input by its std
         zca_whitening=False,  # apply ZCA whitening
-        rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
+        rotation_range=10,  # randomly rotate images in the range (degrees, 0 to 180)
         width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
         height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
-        horizontal_flip=True,  # randomly flip images
-        vertical_flip=False, # randomly flip images
+        horizontal_flip=False,  # randomly flip images
+        vertical_flip=True, # randomly flip images
         callbacks=[earlyStopping])
 
     # compute quantities required for featurewise normalization
