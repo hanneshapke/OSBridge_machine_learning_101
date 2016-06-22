@@ -2,9 +2,6 @@ import os
 from PIL import Image
 import numpy as np
 
-import pickle
-import gzip
-
 from sklearn.utils import shuffle
 from sklearn.cross_validation import train_test_split
 
